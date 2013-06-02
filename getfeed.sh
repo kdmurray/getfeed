@@ -6,15 +6,12 @@ while getopts ":f::d::o::t:" opt; do
   case $opt in
    	f) 
       		FEED=$OPTARG
-		echo "-f was triggered! $FEED" >&2
       	;;
 	d)
 		DISPLAY=$OPTARG
-		echo "-d was triggered? $DISPLAY" >&2
 	;;
 	o)
 		OUTPUTFILE=$OPTARG
-		echo "-o was triggered! $OUTPUTFILE" >&2
 	;;
 	\?)
       		echo "Invalid option: -$OPTARG" >&2
