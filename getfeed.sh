@@ -2,6 +2,8 @@
 
 #OUTPUTFILE=getfeed.txt		#output file for the script
 
+command -v xml2 >/dev/null 2>&1 || { echo >&2 "I require xml2 but it's not installed.  Aborting."; exit 1; }
+
 while getopts ":f::d::o::t:" opt; do
   case $opt in
    	f) 
