@@ -29,13 +29,32 @@ wget -q -O- $FEED | xml2 |grep '/rss/channel/item/title\|/rss/channel/item/link'
 #strip whitespace
 sed '/^$/d' /tmp/getfeed.temp > /tmp/getfeed2.temp
 
+#count the number of lines in file before trimming it
+
+TOTAL_LINES=$(wc -l /tmp/getfeed2.temp | awk '{printf $1}')
+
+
+if [ $TRIM -gt $TOTAL_LINES ]
+
+then
+
+   
+    cat /tmp/getfeed2.temp > $OUTPUTFILE
+    DISPLAY=$(($TOTAL_LINES/2))
+
+else
+   
+    head -n $TRIM /tmp/getfeed2.temp > $OUTPUTFILE
+
+fi
+
 #delets all but the first 2 times the lines to be displayed
 
-head -n $TRIM /tmp/getfeed2.temp > $OUTPUTFILE
+#head -n $TRIM /tmp/getfeed2.temp > $OUTPUTFILE
 
 #delete the temp file
-rm /tmp/getfeed.temp
-rm /tmp/getfeed2.temp
+#rm /tmp/getfeed.temp
+#rm /tmp/getfeed2.temp
 
 #this for loop joins lines so that there aren't title lines followed by links but title and link in a single line
 for i in $(eval echo {1..$DISPLAY})
