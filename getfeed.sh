@@ -21,9 +21,10 @@ while getopts ":f::d::o::t:" opt; do
   esac
 done
 
-
+#this sets the trim amount.  most rss feeds include a title and link back to the blog it came from.  because each line shows up on a seperate line initially we need to double the display for the proper trim
 TRIM=$((2*$DISPLAY))
 
+#retrieve the rss feed, parse it for the title and link to a post, and output it to a temp file
 wget -q -O- $FEED | xml2 |grep '/rss/channel/item/title\|/rss/channel/item/link' | sed -e 's/\/rss\/channel\/item\/title=//g' -e 's/\/rss\/channel\/item\/link=//g' > /tmp/getfeed.temp
 
 #strip whitespace
@@ -33,28 +34,23 @@ sed '/^$/d' /tmp/getfeed.temp > /tmp/getfeed2.temp
 
 TOTAL_LINES=$(wc -l /tmp/getfeed2.temp | awk '{printf $1}')
 
-
+#check that the total number of lines available is not less than the trim amount
+#if trim is greater than total lines set display to amount to total lines
 if [ $TRIM -gt $TOTAL_LINES ]
 
 then
 
-   
-    cat /tmp/getfeed2.temp > $OUTPUTFILE
     DISPLAY=$(($TOTAL_LINES/2))
-
-else
-   
-    head -n $TRIM /tmp/getfeed2.temp > $OUTPUTFILE
 
 fi
 
 #delets all but the first 2 times the lines to be displayed
 
-#head -n $TRIM /tmp/getfeed2.temp > $OUTPUTFILE
+head -n $TRIM /tmp/getfeed2.temp > $OUTPUTFILE
 
 #delete the temp file
-#rm /tmp/getfeed.temp
-#rm /tmp/getfeed2.temp
+rm /tmp/getfeed.temp
+rm /tmp/getfeed2.temp
 
 #this for loop joins lines so that there aren't title lines followed by links but title and link in a single line
 for i in $(eval echo {1..$DISPLAY})
